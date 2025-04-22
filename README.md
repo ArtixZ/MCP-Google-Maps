@@ -1,4 +1,4 @@
-# MCP Google Maps
+# MCP Google Maps [![MCP-Google-Maps](https://img.shields.io/badge/GitHub-MCPGoogleMaps-informational?style=flat&logo=github&logoColor=white&color=181717)](https://github.com/ArtixZ/MCP-Google-Maps.git)
 
 A Model Context Protocol (MCP) server for Google Maps functionality, providing access to places search, geocoding, directions, and more through the MCP interface.
 
@@ -34,7 +34,8 @@ To use this with your MCP client, add the following to your MCP configuration:
 {
     "mcpServers": {
         "google-maps": {
-            "command": "mcp-google-maps",
+            "command": "npx",
+            "args": ["-y", "mcp-google-maps"],
             "env": {
                 "GOOGLE_MAPS_API_KEY": "your_api_key_here",
                 "DEFAULT_LANGUAGE": "en",
