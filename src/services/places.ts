@@ -106,7 +106,10 @@ export class PlacesSearcher {
                         "name",
                         "formatted_address",
                         "geometry",
+                        "googleMapsLinks",
                         "rating",
+                        "reviews",
+                        "reviewSummary",
                         "user_ratings_total",
                         "opening_hours",
                         "photos",
@@ -119,8 +122,26 @@ export class PlacesSearcher {
             });
 
             const place = response.data.result;
+
+            // First check if the API call was successful
+            if (response.data.status !== "OK") {
+                throw new Error(
+                    `Google Places API error: ${response.data.status} - ${response.data.error_message || "Unknown error"}`
+                );
+            }
+
+            // Check if we have a result
+            if (!place) {
+                throw new Error(
+                    "No place data returned from Google Places API"
+                );
+            }
+
+            // Check for required fields with detailed error message
             if (!place.place_id || !place.name) {
-                throw new Error("Required place details are missing");
+                throw new Error(
+                    `Missing required place data - place_id: ${place.place_id || "undefined"}, name: ${place.name || "undefined"}, API status: ${response.data.status}`
+                );
             }
             return {
                 success: true,
