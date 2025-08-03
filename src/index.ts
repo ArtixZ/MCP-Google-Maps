@@ -81,13 +81,13 @@ const mapDirectionsService = new MapDirectionsService();
 
 const server = new Server(
     {
-        name: "enhanced-mcp-google-maps",
-        version: "0.0.1",
+        name: "mcp-google-maps",
+        version: "0.0.5",
     },
     {
         capabilities: {
             description:
-                "An enhanced MCP server providing comprehensive Google Maps integration!",
+                "An MCP server providing comprehensive Google Maps integration.",
             tools: {},
         },
     }
@@ -236,7 +236,7 @@ async function runServer() {
     try {
         const transport = new StdioServerTransport();
         await server.connect(transport);
-        console.log("Enhanced MCP Google Maps Server started");
+        console.log("MCP Google Maps Server started");
     } catch (error) {
         console.error("Server startup failed:", error);
         process.exit(1);
