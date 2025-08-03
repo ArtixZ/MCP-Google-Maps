@@ -1,102 +1,82 @@
-import { LatLngLiteral } from '@googlemaps/google-maps-services-js';
+import { LatLngLiteral } from "@googlemaps/google-maps-services-js";
 
 export interface ServiceResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
+    success: boolean;
+    data?: T;
+    error?: string;
 }
 
 export interface Location {
-  lat: number;
-  lng: number;
-  address?: string;
-  placeId?: string;
+    lat: number;
+    lng: number;
+    address?: string;
+    placeId?: string;
 }
 
 export interface LocationInput {
-  value: string;
-  isCoordinates: boolean;
+    value: string;
+    isCoordinates: boolean;
 }
 
 export interface PlaceDetails {
-  placeId: string;
-  name: string;
-  formattedAddress?: string;
-  location?: LatLngLiteral;
-  rating?: number;
-  userRatingsTotal?: number;
-  openingHours?: {
-    openNow?: boolean;
-    periods?: Array<{
-      open: { day: number; time: string };
-      close: { day: number; time: string };
+    placeId: string;
+    name: string;
+    formattedAddress?: string;
+    location?: LatLngLiteral;
+    rating?: number;
+    userRatingsTotal?: number;
+    openingHours?: {
+        openNow?: boolean;
+        periods?: Array<{
+            open: { day: number; time: string };
+            close: { day: number; time: string };
+        }>;
+    };
+    photos?: Array<{
+        photoReference: string;
+        height: number;
+        width: number;
     }>;
-  };
-  photos?: Array<{
-    photoReference: string;
-    height: number;
-    width: number;
-  }>;
-  priceLevel?: number;
-  types?: string[];
-  website?: string;
-  phoneNumber?: string;
-}
-
-export interface StaticMapOptions {
-  center: Location;
-  zoom: number;
-  size: {
-    width: number;
-    height: number;
-  };
-  markers?: Array<{
-    location: Location;
-    color?: string;
-    label?: string;
-  }>;
-  path?: {
-    points: Location[];
-    color?: string;
-    weight?: number;
-  };
-  mapType?: 'roadmap' | 'satellite' | 'terrain' | 'hybrid';
+    priceLevel?: number;
+    types?: string[];
+    website?: string;
+    phoneNumber?: string;
 }
 
 export interface DirectionsResult {
-  routes: Array<{
-    summary: string;
-    legs: Array<{
-      distance: { text: string; value: number };
-      duration: { text: string; value: number };
-      startAddress: string;
-      endAddress: string;
-      steps: Array<{
-        distance: { text: string; value: number };
-        duration: { text: string; value: number };
-        instructions: string;
-        travelMode: string;
-      }>;
+    routes: Array<{
+        summary: string;
+        legs: Array<{
+            distance: { text: string; value: number };
+            duration: { text: string; value: number };
+            startAddress: string;
+            endAddress: string;
+            steps: Array<{
+                distance: { text: string; value: number };
+                duration: { text: string; value: number };
+                instructions: string;
+                travelMode: string;
+            }>;
+        }>;
     }>;
-  }>;
 }
 
-export type TravelMode = 'driving' | 'walking' | 'bicycling' | 'transit';
+export type TravelMode = "driving" | "walking" | "bicycling" | "transit";
 
 export interface DistanceMatrixResult {
-  originAddresses: string[];
-  destinationAddresses: string[];
-  rows: Array<{
-    elements: Array<{
-      status: string;
-      duration?: { text: string; value: number };
-      distance?: { text: string; value: number };
+    originAddresses: string[];
+    destinationAddresses: string[];
+    rows: Array<{
+        elements: Array<{
+            status: string;
+            duration?: { text: string; value: number };
+            distance?: { text: string; value: number };
+        }>;
     }>;
-  }>;
 }
 
 export interface ElevationResult {
-  elevation: number;
-  location: LatLngLiteral;
-  resolution: number;
-} 
+    elevation: number;
+    location: LatLngLiteral;
+    resolution: number;
+}

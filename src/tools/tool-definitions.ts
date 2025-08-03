@@ -48,91 +48,6 @@ export const SEARCH_NEARBY_TOOL: Tool = {
     },
 };
 
-export const STATIC_MAP_TOOL: Tool = {
-    name: "generate_static_map",
-    description: "Generate a static map image URL",
-    inputSchema: {
-        type: "object",
-        properties: {
-            center: {
-                type: "object",
-                required: ["lat", "lng"],
-                properties: {
-                    lat: {
-                        type: "number",
-                        description: "Latitude",
-                        minimum: -90,
-                        maximum: 90,
-                    },
-                    lng: {
-                        type: "number",
-                        description: "Longitude",
-                        minimum: -180,
-                        maximum: 180,
-                    },
-                },
-            },
-            zoom: {
-                type: "number",
-                description: "Map zoom level (0-21)",
-                minimum: 0,
-                maximum: 21,
-            },
-            size: {
-                type: "object",
-                required: ["width", "height"],
-                properties: {
-                    width: {
-                        type: "number",
-                        description: "Image width in pixels",
-                        minimum: 1,
-                        maximum: 640,
-                    },
-                    height: {
-                        type: "number",
-                        description: "Image height in pixels",
-                        minimum: 1,
-                        maximum: 640,
-                    },
-                },
-            },
-            markers: {
-                type: "array",
-                items: {
-                    type: "object",
-                    required: ["location"],
-                    properties: {
-                        location: {
-                            type: "object",
-                            required: ["lat", "lng"],
-                            properties: {
-                                lat: {
-                                    type: "number",
-                                    minimum: -90,
-                                    maximum: 90,
-                                },
-                                lng: {
-                                    type: "number",
-                                    minimum: -180,
-                                    maximum: 180,
-                                },
-                            },
-                        },
-                        color: { type: "string" },
-                        label: { type: "string", maxLength: 1 },
-                    },
-                },
-            },
-            mapType: {
-                type: "string",
-                enum: ["roadmap", "satellite", "terrain", "hybrid"],
-                default: "roadmap",
-            },
-        },
-        required: ["center", "zoom", "size"],
-    },
-};
-
 // Re-export existing tools with English descriptions
 export const GET_PLACE_DETAILS_TOOL: Tool = {
     name: "get_place_details",
@@ -258,3 +173,5 @@ export const ELEVATION_TOOL: Tool = {
         required: ["locations"],
     },
 };
+
+export { MAP_DIRECTIONS_TOOL } from "./map-directions-tool";

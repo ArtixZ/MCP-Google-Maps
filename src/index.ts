@@ -14,13 +14,13 @@ import {
     DISTANCE_MATRIX_TOOL,
     DIRECTIONS_TOOL,
     ELEVATION_TOOL,
-    STATIC_MAP_TOOL,
+    MAP_DIRECTIONS_TOOL,
 } from "./tools/tool-definitions.js";
-import { StaticMapsService } from "./services/static-maps.js";
 import { PlacesSearcher } from "./services/places.js";
+import { MapDirectionsService } from "./services/map-directions.js";
 import { handleError } from "./utils/error-handling.js";
 import config from "./config/environment.js";
-import { LocationInput, StaticMapOptions } from "./types/index.js";
+import { LocationInput } from "./types/index.js";
 import { TravelMode } from "@googlemaps/google-maps-services-js";
 
 type ToolArgs = {
@@ -54,7 +54,15 @@ type ToolArgs = {
     get_elevation: {
         locations: Array<{ latitude: number; longitude: number }>;
     };
-    generate_static_map: StaticMapOptions;
+    get_map_with_directions: {
+        origin: { address: string; lat: number; lng: number };
+        destination: { address: string; lat: number; lng: number };
+        waypoints?: Array<{ address: string; lat: number; lng: number }>;
+        mode?: TravelMode;
+        size?: { width: number; height: number };
+        scale?: number;
+        mapType?: "roadmap" | "satellite" | "hybrid" | "terrain";
+    };
 };
 
 const tools = [
@@ -65,11 +73,11 @@ const tools = [
     DISTANCE_MATRIX_TOOL,
     DIRECTIONS_TOOL,
     ELEVATION_TOOL,
-    STATIC_MAP_TOOL,
+    MAP_DIRECTIONS_TOOL,
 ];
 
 const placesSearcher = new PlacesSearcher();
-const staticMapsService = new StaticMapsService();
+const mapDirectionsService = new MapDirectionsService();
 
 const server = new Server(
     {
@@ -190,10 +198,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
-            case "generate_static_map": {
-                const result = await staticMapsService.generateStaticMap(
-                    args as unknown as ToolArgs[typeof name]
-                );
+            case "get_map_with_directions": {
+                const typedArgs = args as ToolArgs[typeof name];
+                const result =
+                    await mapDirectionsService.getMapWithDirections(typedArgs);
                 return {
                     content: [
                         { type: "text", text: JSON.stringify(result, null, 2) },
