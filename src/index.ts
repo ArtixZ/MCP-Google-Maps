@@ -82,7 +82,7 @@ const mapDirectionsService = new MapDirectionsService();
 const server = new Server(
     {
         name: "mcp-google-maps",
-        version: "0.0.5",
+        version: "0.0.6",
     },
     {
         capabilities: {
