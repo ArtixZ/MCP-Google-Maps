@@ -99,6 +99,7 @@ export class MapDirectionsService {
         });
 
         // Combine everything
+        // Caution !!!Do not send this URL to the client directly, as it contains API key!!!
         return `${baseUrl}?${urlParams}&${markers.join("&")}&${path}`;
     }
 
