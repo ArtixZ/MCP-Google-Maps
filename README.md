@@ -62,7 +62,7 @@ The following commands are available through the MCP interface:
 - `get_distance_matrix`: Calculate distances between multiple origins and destinations
 - `get_directions`: Get directions between two points
 - `get_elevation`: Get elevation data for locations
-- `generate_static_map`: Generate static map images
+- `get_map_with_directions`: Generate map visualizations with directions, waypoints, and static map images
 
 ## License
 
