@@ -1,6 +1,6 @@
 {
     "name": "mcp-google-maps",
-    "version": "0.0.6",
+    "version": "0.1.0",
     "type": "module",
     "description": "MCP Google Maps server",
     "main": "dist/index.cjs",
