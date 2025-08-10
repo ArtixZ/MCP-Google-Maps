@@ -1,58 +1,74 @@
 import express from "express";
-import { randomUUID } from "node:crypto";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createMcpServer } from "./create-server.js";
 
 const app = express();
 app.use(express.json());
 
-const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
+app.post("/mcp", async (req: express.Request, res: express.Response) => {
+    // In stateless mode, create a new instance of transport and server for each request
+    // to ensure complete isolation. A single instance would cause request ID collisions
+    // when multiple clients connect concurrently.
 
-app.post("/mcp", async (req, res) => {
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
-    let transport: StreamableHTTPServerTransport;
+    try {
+        const server = createMcpServer();
+        const transport: StreamableHTTPServerTransport =
+            new StreamableHTTPServerTransport({
+                sessionIdGenerator: undefined,
+                enableDnsRebindingProtection: true,
+                allowedHosts: ["127.0.0.1", "localhost", "localhost:3333"],
+            });
 
-    if (sessionId && transports[sessionId]) {
-        transport = transports[sessionId];
-    } else {
-        transport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: () => randomUUID(),
-            onsessioninitialized: (sessionId: string) => {
-                transports[sessionId] = transport;
-            },
-            enableDnsRebindingProtection: true,
-            allowedHosts: ["127.0.0.1", "localhost"],
+        res.on("close", () => {
+            console.log("Request closed");
+            transport.close();
+            server.close();
         });
 
-        transport.onclose = () => {
-            if (transport.sessionId) {
-                delete transports[transport.sessionId];
-            }
-        };
-
-        const server = createMcpServer();
         await server.connect(transport);
+        await transport.handleRequest(req, res, req.body);
+    } catch (error) {
+        console.error("Error handling MCP request:", error);
+        if (!res.headersSent) {
+            res.status(500).json({
+                jsonrpc: "2.0",
+                error: {
+                    code: -32603,
+                    message: "Internal server error",
+                },
+                id: null,
+            });
+        }
     }
-
-    await transport.handleRequest(req, res, req.body);
 });
 
-const handleSessionRequest = async (
-    req: express.Request,
-    res: express.Response
-) => {
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
-    if (!sessionId || !transports[sessionId]) {
-        res.status(400).send("Invalid or missing session ID");
-        return;
-    }
+app.get("/mcp", async (req: express.Request, res: express.Response) => {
+    console.log("Received GET MCP request");
+    res.writeHead(405).end(
+        JSON.stringify({
+            jsonrpc: "2.0",
+            error: {
+                code: -32000,
+                message: "Method not allowed.",
+            },
+            id: null,
+        })
+    );
+});
 
-    const transport = transports[sessionId];
-    await transport.handleRequest(req, res);
-};
-
-app.get("/mcp", handleSessionRequest);
-app.delete("/mcp", handleSessionRequest);
+app.delete("/mcp", async (req: express.Request, res: express.Response) => {
+    console.log("Received DELETE MCP request");
+    res.writeHead(405).end(
+        JSON.stringify({
+            jsonrpc: "2.0",
+            error: {
+                code: -32000,
+                message: "Method not allowed.",
+            },
+            id: null,
+        })
+    );
+});
 
 const PORT = process.env.PORT || 3333;
 app.listen(PORT, () => {
